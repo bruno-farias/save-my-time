@@ -70,3 +70,8 @@ fingerprints:
     date: '2026-11-06'
     commit: 9c0155b (working tree adds tests, mutation tooling, and two boundary fixes)
     cli: Postman CLI 1.73.0
+  - id: integration-process-cleanup
+    date: '2026-11-06'
+    commit: ce10021 (working tree fixes simulation process-tree cleanup)
+    cli: Postman CLI 1.73.0
+    verification: All 83 HTTP assertions passed on Linux CI, but a descendant of the CLI launcher kept its output pipes open after shutdown. The runner now stops the process group and awaits pipe closure. Two standalone regression cases and a local 83-case HTTP rerun passed and exited successfully. Provider fixtures and wire contracts are unchanged.

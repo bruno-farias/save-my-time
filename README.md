@@ -161,7 +161,7 @@ The UI preview uses sample articles and responses, makes no provider calls, and 
 npm run check
 ```
 
-This runs type-checking, unit tests with coverage gates, language validation, and the production build. Coverage reports are written to `coverage/`.
+This runs type-checking, unit tests with coverage gates, test-runner cleanup checks, language validation, and the production build. Coverage reports are written to `coverage/`.
 
 ```sh
 npm run test:mutation

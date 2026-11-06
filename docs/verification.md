@@ -6,6 +6,7 @@ Version 0.3.1 and its expanded test suite checked on 2026-11-06, using Node 24.1
 | --- | --- | --- |
 | `npm run typecheck` | Passed | Application, provider, extension, and test code type-checks. |
 | Unit tests (`npm run test:coverage`) | 266 passed | Settings and URL boundaries, article sanitization and metadata, context limits, stream cleanup and framing, browser permissions and cache races, actual Web Crypto operations, vault formats and transitions, and language validation/fallback. |
+| Test-runner cleanup (`npm run test:scripts`) | 2 passed | The mock launcher and its descendants release inherited output pipes, including when a descendant ignores graceful termination. Repeated cleanup also completes after a signal exit. |
 | Core V8 coverage | 100% statements, branches, functions, and lines | The nine modules listed in [testing](testing.md). Per-file gates require 95% statements/lines/functions and 85% branches. This is not whole-extension coverage. |
 | Stryker mutation tests | 90.23% passed | 1,187 executed mutants: 1,059 killed, 12 timed out, and 116 survived. No uncovered mutants or runner errors. Four compile-time glob mutants are explicitly ignored. The 80% gate and nonempty/error-free run guards passed. |
 | `npm run locales:check` | Passed | 32 output languages, 4 interface languages, and 261 translated messages per initial interface. New JSON files require no registration code. |
@@ -45,6 +46,8 @@ The GitHub workflow runs coverage/build, HTTP/browser, and mutation jobs on push
 Postman CLI 1.73.0 differs from its installed skill in two places: `postman status` is an unknown command, and simulation mock paths need the explicit `config.yaml` file instead of the mock directory. The local simulation uses the working file form. All fixtures and evidence remain local; guest workspace bindings and generated skills are ignored by Git.
 
 The test expansion found two regressions and added failing cases before fixing them: an oversized stream record ending in a newline could bypass the size guard, and UTF-8 context truncation could delete a complete replacement character already present in the article. Provider wire contracts remain unchanged. The 83-case HTTP rerun recorded 19 Ollama, 19 OpenAI, 22 Claude, and 23 Gemini requests; all nine browser cases passed in Chromium and Brave after the fixes.
+
+The first Linux CI run passed all 83 HTTP assertions but hung during shutdown: terminating the Postman launcher left its descendant process holding the output pipes open. The integration runner now terminates the process group, escalates if needed, and awaits closed pipes. Two regression cases exercise this cleanup without requiring Postman or network access.
 
 The mutation command rejects runner errors and empty runs, in addition to enforcing its score threshold. A deliberately empty line-range selection was verified to exit unsuccessfully. A short test-name fix removed runner failures caused by embedding a very large invalid-vault fixture in a parameterized test name. Stryker dependencies are unmodified; configuration compatibility notes and the single compile-time glob exclusion are in [testing](testing.md).
 

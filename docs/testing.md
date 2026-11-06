@@ -10,7 +10,8 @@ Install dependencies with `npm ci` using Node 24.15+ in the 24.x series.
 | --- | --- |
 | `npm test` | Unit and regression tests. |
 | `npm run test:coverage` | Unit tests with V8 coverage and enforced thresholds. |
-| `npm run check` | TypeScript, coverage, locale validation, and the production build. |
+| `npm run test:scripts` | Test-runner process cleanup, including descendants that ignore graceful termination. |
+| `npm run check` | TypeScript, coverage, script tests, locale validation, and the production build. |
 | `npm run test:integration` | Generation and model catalogs over real HTTP to local Postman simulations. |
 | `npm run test:e2e` | Playwright tests of the preview and built extension, including native side-panel behavior. |
 | `npm run test:mutation` | Stryker changes production logic and checks that the unit tests detect it. |
@@ -78,7 +79,7 @@ See [Stryker's Vitest runner](https://stryker-mutator.io/docs/stryker-js/vitest-
 
 The GitHub workflow runs three independent jobs on pushes and pull requests:
 
-1. Build, unit tests, and coverage gates.
+1. Build, unit tests, script tests, and coverage gates.
 2. Postman HTTP integration tests and Chromium browser tests.
 3. Mutation testing and its score gate.
 
