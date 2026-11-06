@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "fi",
+  "name": "Finnish",
+  "nativeName": "Suomi",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

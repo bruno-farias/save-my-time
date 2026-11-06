@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "id",
+  "name": "Indonesian",
+  "nativeName": "Bahasa Indonesia",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "vi",
+  "name": "Vietnamese",
+  "nativeName": "Tiếng Việt",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

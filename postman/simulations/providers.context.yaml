@@ -1,0 +1,61 @@
+purpose:
+  stands_in_for: Ollama chat and tags, OpenAI Chat Completions and models, Claude Messages and paginated models, and Gemini streaming generation and paginated models.
+  unblocks: Local verification of extension request serialization, streaming, cancellation, and error handling without real provider keys or inference.
+assumptions:
+  - id: documented-wire-protocols
+    status: supported
+    claim: The implemented endpoint and streaming event shapes match the documented text-generation subset of these four provider APIs.
+    reason: First-party endpoint and streaming documentation was checked; Orbit supplied additional OpenAI, Anthropic, and Ollama guidance. Orbit's Gemini result covered non-streaming generation only, so its obsolete model example was not used.
+    verification: On 2026-11-06, checked the sources in docs/provider-contracts.md and implemented request builders and terminal-event parsing. This is contract evidence, not live account evidence.
+    source: docs/provider-contracts.md; src/providers/remote.ts; https://docs.ollama.com/api/chat; https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create; https://platform.claude.com/docs/en/build-with-claude/streaming; https://ai.google.dev/api/generate-content
+    updated_at: '2026-11-06'
+  - id: client-http-behavior
+    status: supported
+    claim: In the simulated scenarios, all four real HTTP adapters serialize source context, return visible streamed text, preserve Unicode, and report failed or incomplete responses.
+    reason: The 83-case HTTP integration run passed and Postman logged requests to every member. The test transport rewrites only the destination, not the payload, headers, response, or fetch implementation.
+    verification: On 2026-11-06, npm run test:integration passed 45 generation cases covering valid output, 401, 429, 404, HTML 502, malformed records, in-stream errors, empty output, premature disconnect, output limits, abort, and Gemini safety blocking, plus 38 catalog cases covering auth, pagination, filtering, empty/malformed lists, repeated cursors, redirects, and cancellation. See fingerprint model-discovery-and-theme. Re-run to regenerate ignored logs.
+    source: tests/providers.integration.test.ts; scripts/run-integration.mjs; postman/mocks/llm-providers/stream.js; test-results/provider-simulation.ndjson
+    updated_at: '2026-11-06'
+  - id: live-model-compatibility
+    status: unknown
+    claim: The default model identifiers, user account permissions, and hardware will support successful live summaries and follow-up chat.
+    reason: Model documentation supports the implementation choices, but only the configured OpenAI catalog was checked live; generation and prepared browser models were not exercised. Local fixtures do not establish inference quality, billing, real CORS behavior, or hardware availability.
+    verification: Live provider generation and Chrome AI inference were not run. Use a configured account or local model to verify summaries, language output, and follow-ups in the installed extension.
+    source: README.md; src/lib/settings.ts; src/providers/chrome-ai.ts
+    updated_at: '2026-11-06'
+  - id: fixture-provenance
+    status: supported
+    claim: These fixtures are local, hand-authored models of the documented subset, not published mocks supplied by the providers.
+    reason: Postman CLI initialized a guest session; signed-in owner-workspace discovery was unavailable and was skipped.
+    verification: On 2026-11-06, created local handlers from the documented contract. They reject malformed supported requests and return 501 for unmodeled routes. No mock or simulation was pushed or deployed.
+    source: postman/mocks/llm-providers/config.yaml; postman/mocks/llm-providers/stream.js
+    updated_at: '2026-11-06'
+  - id: model-catalog-contracts
+    status: supported
+    claim: Model discovery follows documented list endpoints, authentication, and pagination for the four HTTP providers.
+    reason: Orbit discovery/integration briefs and first-party list documentation were checked. Google's documented x-goog-api-key header replaces the query key used in Orbit's example. Catalogs never contain article text.
+    verification: On 2026-11-06, 38 real-HTTP catalog cases passed through Postman. Chromium and Brave exercised catalog loading, refresh, manual model preservation, and cancellation after changing credentials. OpenAI also returned 53 models in the installed Brave extension using its existing configuration.
+    source: docs/provider-contracts.md; docs/verification.md; src/providers/models.ts; tests/models.integration.test.ts; tests/e2e/settings.spec.ts
+    updated_at: '2026-11-06'
+  - id: encrypted-credentials-and-language-settings
+    status: supported
+    claim: In the simulated browser cases, unlocked encrypted credentials authenticate provider requests and interface language changes remain independent of AI output instructions.
+    reason: Disposable Chromium and Brave profiles migrated fake keys into the vault, loaded model catalogs and completed a summary through the HTTP fixtures. Local and session storage inspection found no fake keys or master passwords after migration. A Portuguese interface produced a Swedish output-language instruction.
+    verification: On 2026-11-06, 42 unit tests and 83 HTTP integration tests passed; all four HTTP members appeared in the simulation log. Eight browser cases passed in Chromium and Brave, with three vault/language cases rerun after final fixes. These include wrong passwords, rotation, reset, cross-panel locks, stale-form recovery, idle/resumed-document locking, and generation abort on lock. This does not establish live provider language quality. See fingerprint vault-and-community-languages.
+    source: tests/vault.test.ts; tests/locales.test.ts; tests/e2e/vault.spec.ts; docs/verification.md; test-results/provider-simulation.ndjson
+    updated_at: '2026-11-06'
+fingerprints:
+  - id: initial-implementation
+    date: '2026-11-06'
+    commit: cccbff9 (initial commit; working tree contains the new, uncommitted implementation)
+    cli: Postman CLI 1.73.0
+  - id: model-discovery-and-theme
+    date: '2026-11-06'
+    version: 0.2.0
+    commit: cccbff9 (working tree contains the uncommitted implementation)
+    cli: Postman CLI 1.73.0
+  - id: vault-and-community-languages
+    date: '2026-11-06'
+    version: 0.3.0
+    commit: cccbff9 (working tree contains the uncommitted implementation)
+    cli: Postman CLI 1.73.0

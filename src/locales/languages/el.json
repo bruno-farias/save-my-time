@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "el",
+  "name": "Greek",
+  "nativeName": "Ελληνικά",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

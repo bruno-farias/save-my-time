@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "zh",
+  "name": "Chinese",
+  "nativeName": "中文",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

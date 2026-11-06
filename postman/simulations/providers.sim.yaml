@@ -1,0 +1,19 @@
+simulation: save-my-time-providers
+routing: path
+mocks:
+  - name: Ollama
+    routeKey: ollama
+    origin: [localhost]
+    path: postman/mocks/llm-providers/config.yaml
+  - name: OpenAI
+    routeKey: openai
+    origin: [api.openai.com]
+    path: postman/mocks/llm-providers/config.yaml
+  - name: Claude
+    routeKey: anthropic
+    origin: [api.anthropic.com]
+    path: postman/mocks/llm-providers/config.yaml
+  - name: Gemini
+    routeKey: gemini
+    origin: [generativelanguage.googleapis.com]
+    path: postman/mocks/llm-providers/config.yaml

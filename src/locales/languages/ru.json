@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "ru",
+  "name": "Russian",
+  "nativeName": "Русский",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "ko",
+  "name": "Korean",
+  "nativeName": "한국어",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

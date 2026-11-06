@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "de",
+  "name": "German",
+  "nativeName": "Deutsch",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

@@ -1,0 +1,46 @@
+{
+  "name": "save-my-time",
+  "version": "0.3.1",
+  "private": true,
+  "type": "module",
+  "description": "Read less. Understand more. A private, multi-provider article companion for Chrome and Brave.",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "npm run locales:check && tsc --noEmit && vite build && node scripts/build-extension.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "node scripts/run-integration.mjs",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm test && npm run build",
+    "package": "npm run build && node scripts/package.mjs",
+    "locales:check": "node scripts/locales.mjs",
+    "locales:sync": "node scripts/locales.mjs --sync"
+  },
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "lucide-react": "^1.70.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@babel/parser": "^8.1.0",
+    "@playwright/test": "^1.65.0",
+    "@types/chrome": "^0.3.7",
+    "@types/dom-chromium-ai": "^0.0.18",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "esbuild": "^0.28.2",
+    "jsdom": "^31.0.0",
+    "sharp": "^0.35.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
+  }
+}

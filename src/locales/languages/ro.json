@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "ro",
+  "name": "Romanian",
+  "nativeName": "Română",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

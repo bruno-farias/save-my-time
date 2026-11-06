@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "tr",
+  "name": "Turkish",
+  "nativeName": "Türkçe",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

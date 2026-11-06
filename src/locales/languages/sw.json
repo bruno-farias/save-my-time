@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "sw",
+  "name": "Swahili",
+  "nativeName": "Kiswahili",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

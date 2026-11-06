@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "hi",
+  "name": "Hindi",
+  "nativeName": "हिन्दी",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

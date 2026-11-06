@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "da",
+  "name": "Danish",
+  "nativeName": "Dansk",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

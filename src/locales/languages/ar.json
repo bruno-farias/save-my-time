@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "ar",
+  "name": "Arabic",
+  "nativeName": "العربية",
+  "direction": "rtl",
+  "interface": false,
+  "messages": {}
+}

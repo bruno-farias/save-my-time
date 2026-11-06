@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "th",
+  "name": "Thai",
+  "nativeName": "ไทย",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

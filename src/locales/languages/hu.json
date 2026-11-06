@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "hu",
+  "name": "Hungarian",
+  "nativeName": "Magyar",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}

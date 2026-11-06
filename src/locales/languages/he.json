@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "he",
+  "name": "Hebrew",
+  "nativeName": "עברית",
+  "direction": "rtl",
+  "interface": false,
+  "messages": {}
+}

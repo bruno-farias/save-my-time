@@ -1,0 +1,10 @@
+version: 1
+name: LLM provider contract fixtures
+slug: llm-provider-contract-fixtures
+protocol: http
+port: 4500
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./stream.js
+    default: true

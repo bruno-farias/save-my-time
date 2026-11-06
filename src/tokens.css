@@ -1,0 +1,100 @@
+:root {
+  color-scheme: light;
+  --paper: #f8f8f2;
+  --white: #fefefb;
+  --ink: #303a2b;
+  --green: #526448;
+  --muted: #6e7765;
+  --secondary-ink: #626d57;
+  --body-ink: #48513f;
+  --terracotta: #bc7c53;
+  --wash: #edeee7;
+  --line: #e7e9de;
+  --line-strong: #d7dfcd;
+  --accent-border: #8ea17e;
+  --tint: #edf0e4;
+  --tint-hover: #e2e8d8;
+  --selected: #f0f3e9;
+  --primary-hover: #2e422c;
+  --primary-ink: #fffdf6;
+  --art-line: #b0bca4;
+  --art-back: #e5e9d6;
+  --art-paper: #fdfcf6;
+  --disabled-ink: #b2baa8;
+  --warm-ink: #965932;
+  --warm-bg: #fbefe6;
+  --warm-border: #efd5c2;
+  --violet-ink: #6778b3;
+  --violet-bg: #eceef5;
+  --teal-ink: #526c5f;
+  --teal-bg: #e3ede6;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #191e18;
+  --white: #232a21;
+  --ink: #e6ebdf;
+  --green: #b4cc9e;
+  --muted: #a6b19c;
+  --secondary-ink: #bdcbb0;
+  --body-ink: #d4ddcb;
+  --terracotta: #d99b75;
+  --wash: #252d22;
+  --line: #30392c;
+  --line-strong: #46513d;
+  --accent-border: #8ba375;
+  --tint: #2b3526;
+  --tint-hover: #35432d;
+  --selected: #303d29;
+  --primary-hover: #c9dfb5;
+  --primary-ink: #1c2815;
+  --art-line: #7d936c;
+  --art-back: #3d4b32;
+  --art-paper: #2e3828;
+  --disabled-ink: #76836b;
+  --warm-ink: #efba95;
+  --warm-bg: #382a21;
+  --warm-border: #674735;
+  --violet-ink: #adb8ee;
+  --violet-bg: #303344;
+  --teal-ink: #afcfbe;
+  --teal-bg: #2a3c31;
+}
+
+/* Use the system palette before stored settings finish loading. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+  color-scheme: dark;
+  --paper: #191e18;
+  --white: #232a21;
+  --ink: #e6ebdf;
+  --green: #b4cc9e;
+  --muted: #a6b19c;
+  --secondary-ink: #bdcbb0;
+  --body-ink: #d4ddcb;
+  --terracotta: #d99b75;
+  --wash: #252d22;
+  --line: #30392c;
+  --line-strong: #46513d;
+  --accent-border: #8ba375;
+  --tint: #2b3526;
+  --tint-hover: #35432d;
+  --selected: #303d29;
+  --primary-hover: #c9dfb5;
+  --primary-ink: #1c2815;
+  --art-line: #7d936c;
+  --art-back: #3d4b32;
+  --art-paper: #2e3828;
+  --disabled-ink: #76836b;
+  --warm-ink: #efba95;
+  --warm-bg: #382a21;
+  --warm-border: #674735;
+  --violet-ink: #adb8ee;
+  --violet-bg: #303344;
+  --teal-ink: #afcfbe;
+  --teal-bg: #2a3c31;
+  }
+}

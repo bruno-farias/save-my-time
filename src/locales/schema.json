@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://save-my-time.local/language.schema.json",
+  "title": "Save My Time language contribution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["code", "name", "nativeName", "direction", "interface", "messages"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "code": { "type": "string", "description": "Canonical BCP 47 tag. Must match the JSON filename." },
+    "name": { "type": "string", "minLength": 1, "description": "English language name." },
+    "nativeName": { "type": "string", "minLength": 1 },
+    "direction": { "enum": ["ltr", "rtl"] },
+    "interface": { "type": "boolean", "description": "Offer as an interface language as well as an AI output language." },
+    "messages": {
+      "type": "object",
+      "description": "English source string to translation. Preserve named placeholders. Missing entries use English.",
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    }
+  }
+}

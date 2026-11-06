@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "code": "ta",
+  "name": "Tamil",
+  "nativeName": "தமிழ்",
+  "direction": "ltr",
+  "interface": false,
+  "messages": {}
+}
