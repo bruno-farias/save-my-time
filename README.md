@@ -186,6 +186,14 @@ SMT_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Bro
 
 GitHub Actions runs coverage/build, HTTP/browser tests, and mutation tests on pushes and pull requests, with downloadable reports. See the [verification record](docs/verification.md) for measured results and remaining gaps, and [provider contracts](docs/provider-contracts.md) for request formats and sources.
 
+## TODO
+
+- [ ] Verify live summaries and follow-up answers with Ollama, OpenAI, Claude, and Gemini; automated provider tests currently use local fixtures.
+- [ ] Verify Chrome AI model downloads, summarization, and follow-up chat in a supported Chrome installation.
+- [ ] Add WebLLM as another local AI provider.
+- [ ] Reload the installed unpacked extension to pick up the latest fixes.
+- [ ] Prepare and publish a Chrome Web Store release.
+
 ## License
 
 [MIT](LICENSE) © Bruno Farias.
