@@ -155,13 +155,19 @@ The UI preview uses sample articles and responses, makes no provider calls, and 
 | [`postman/`](postman) | Local provider simulations and reusable fixtures. |
 | [`docs/`](docs) | Provider contracts, vault design, and verification notes. |
 
-### Existing checks
+### Tests and mutation testing
 
 ```sh
 npm run check
 ```
 
-This runs type-checking, unit tests, language validation, and the production build. The GitHub workflow runs it on pushes and pull requests.
+This runs type-checking, unit tests with coverage gates, language validation, and the production build. Coverage reports are written to `coverage/`.
+
+```sh
+npm run test:mutation
+```
+
+Stryker checks whether the tests detect deliberate changes to core settings, permissions, caching, extraction, prompts, streams, vault, and language logic. The mutation score must reach 80%. Review survivors in `reports/mutation/mutation.html`. See [the testing guide](docs/testing.md) for the exact scope, per-file coverage thresholds, and tool compatibility notes.
 
 HTTP integration and browser tests use local Postman simulations with fake credentials. They require **Postman CLI 1.70+**. Build the extension before running browser tests:
 
@@ -178,7 +184,7 @@ To run the same browser suite with an installed Brave binary on macOS:
 SMT_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Browser' npm run test:e2e
 ```
 
-See the [verification record](docs/verification.md) for tested behavior and remaining gaps, and [provider contracts](docs/provider-contracts.md) for request formats and sources.
+GitHub Actions runs coverage/build, HTTP/browser tests, and mutation tests on pushes and pull requests, with downloadable reports. See the [verification record](docs/verification.md) for measured results and remaining gaps, and [provider contracts](docs/provider-contracts.md) for request formats and sources.
 
 ## License
 

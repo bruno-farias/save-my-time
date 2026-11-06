@@ -16,3 +16,5 @@ postman/.dependencies/
 .postman/session*
 sim.ndjson
 sim.err
+reports/
+.stryker-tmp/

@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "tsconfigFile": "",
+  "tsconfigFile_comment": "Our self-contained tsconfig has no extends or project references to rewrite. Skip Stryker 10's TS6-only config preprocessor under TypeScript 7; Vitest still loads the copied tsconfig.json. Revisit if external config references are introduced: https://github.com/stryker-mutator/stryker-js/issues/6110",
+  "vitest": { "configFile": "vite.config.ts" },
+  "mutate": [
+    "src/lib/{browser,credential-store,extract,prompts,settings,streams,vault-crypto}.ts",
+    "src/locales/{catalog,validation}.ts"
+  ],
+  "reporters": ["clear-text", "progress", "html", "json"],
+  "clearTextReporter": { "reportTests": false, "reportMutants": false },
+  "concurrency": 4,
+  "timeoutMS": 3000,
+  "thresholds": { "high": 90, "low": 80, "break": 80 },
+  "ignorePatterns": ["dist", "release", "coverage", "reports", "test-results", "postman/skills", ".postman", "docs/*.png"]
+}

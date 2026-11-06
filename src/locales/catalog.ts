@@ -6,6 +6,7 @@ export interface LanguageDefinition {
   interface: boolean;
   messages: Record<string, string>;
 }
+// Stryker disable next-line all: Vite requires a literal glob and options at build time; runtime instrumentation cannot be parsed here.
 const files = import.meta.glob<LanguageDefinition>('./languages/*.json', { eager: true, import: 'default' });
 export const languages = Object.values(files).sort((a, b) => a.code.localeCompare(b.code));
 export const interfaceLanguages = languages.filter(language => language.interface);

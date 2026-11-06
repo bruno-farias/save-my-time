@@ -57,4 +57,6 @@ After changing source strings, run `npm run locales:sync` to regenerate **only**
 
 ## Code changes
 
-Keep all executable extension code bundled locally and use the existing provider boundary. Run `npm run check`; for provider changes, also use the local Postman HTTP fixtures via `npm run test:integration`. For settings, vault, or panel behavior, build and run `npm run test:e2e` in a disposable browser profile. See [verification](docs/verification.md) and [vault design](docs/vault.md).
+Keep all executable extension code bundled locally and use the existing provider boundary. Run `npm run check`, which includes per-file coverage gates. For changes to the core modules listed in the [testing guide](docs/testing.md), also run `npm run test:mutation` and review surviving mutations; the full score must reach 80%. Keep regression tests focused on observable behavior rather than matching implementation details.
+
+For provider changes, use the local Postman HTTP fixtures via `npm run test:integration`. For settings, vault, or panel behavior, build and run `npm run test:e2e` in a disposable browser profile. See [verification](docs/verification.md) and [vault design](docs/vault.md).

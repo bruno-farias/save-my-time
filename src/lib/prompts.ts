@@ -6,7 +6,9 @@ export function truncateBytes(text: string, maxBytes: number): string {
   const encoder = new TextEncoder();
   if (encoder.encode(text).length <= maxBytes) return text;
   const bytes = encoder.encode(text).slice(0, maxBytes);
-  return new TextDecoder().decode(bytes).replace(/\uFFFD$/, '');
+  // Streaming decode omits an incomplete final sequence without removing a
+  // complete replacement character that was already part of the source.
+  return new TextDecoder().decode(bytes, { stream: true });
 }
 
 export function summaryInstruction(settings: Settings): string {

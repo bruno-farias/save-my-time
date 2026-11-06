@@ -24,6 +24,12 @@ function memory(initial: unknown = undefined) {
   };
   return { storage, control, peek: () => structuredClone(record) as Record<string, any> };
 }
+function observed<T>(promise: Promise<T>): Promise<T> {
+  // A deliberate mutant can reject before the barrier is reached. Attach a
+  // handler immediately so this remains a test failure/timeout, not a runner crash.
+  void promise.catch(() => {});
+  return promise;
+}
 function barrier() {
   let release!: () => void, entered!: () => void;
   const paused = new Promise<void>(resolve => { entered = resolve; });
@@ -153,17 +159,17 @@ describe('credential persistence and migration', () => {
     const db = memory(fixture()), store = new CredentialStore(db.storage);
     const loaded = await store.create(password); store.lock();
     const read = barrier(); db.control.beforeRead = read.block;
-    const opening = store.unlock(password); await read.paused; store.lock(); read.release();
+    const opening = observed(store.unlock(password)); await read.paused; store.lock(); read.release();
     await expect(opening).rejects.toThrow('locked while'); expect(store.isUnlocked()).toBe(false);
     db.control.beforeRead = undefined; await store.unlock(password);
     const write = barrier(); db.control.beforeWrite = write.block;
-    const saving = store.save(loaded, true); await write.paused; store.lock(); write.release();
+    const saving = observed(store.save(loaded, true)); await write.paused; store.lock(); write.release();
     await expect(saving).rejects.toThrow('locked while'); expect(store.isUnlocked()).toBe(false); expectNoPlaintext(db.peek());
   });
   it('does not install a new session if a panel closes during vault creation', async () => {
     const db = memory(fixture()), store = new CredentialStore(db.storage), write = barrier();
     db.control.beforeWrite = write.block;
-    const creating = store.create(password); await write.paused; store.lock(); write.release();
+    const creating = observed(store.create(password)); await write.paused; store.lock(); write.release();
     await expect(creating).rejects.toThrow('locked while'); expect(store.isUnlocked()).toBe(false); expectNoPlaintext(db.peek());
     db.control.beforeWrite = undefined; await store.unlock(password); expect((await store.load()).providers.openai.apiKey).toBe(keys.openai);
   });
@@ -176,5 +182,71 @@ describe('credential persistence and migration', () => {
     expect((await store.overview()).mode).toBe('none');
     const settings = await store.load(); expect(settings.providers.openai.apiKey).toBe(''); expect(settings.theme).toBe('dark'); expect(settings.uiLanguage).toBe('pt');
     expect(db.peek().vault).toBeNull(); expectNoPlaintext(db.peek());
+  });
+});
+
+
+describe('vault state transitions', () => {
+  it.each(['openai', 'anthropic', 'gemini'] as const)('requires a vault even when only the %s key is set', async provider => {
+    const settings = defaultSettings(); settings.providers[provider].apiKey = 'fake-single-key';
+    const db = memory(settings), store = new CredentialStore(db.storage);
+    expect((await store.overview()).mode).toBe('migration');
+    await expect(store.load()).rejects.toThrow('Create a master password');
+    await expect(store.save(defaultSettings())).rejects.toThrow('Create a master password');
+    expect(db.peek()).toEqual(settings);
+  });
+  it('saves local-only preferences without creating a vault', async () => {
+    const db = memory(null), store = new CredentialStore(db.storage), settings = defaultSettings();
+    settings.theme = 'dark';
+    expect((await store.overview()).mode).toBe('none');
+    expect(await store.save(settings)).toEqual(settings);
+    expect(db.peek().vault).toBeNull(); expect(store.isUnlocked()).toBe(false);
+    expectNoPlaintext(db.peek());
+  });
+  it('preserves an unlocked session through overview and clears it on reset', async () => {
+    const db = memory(fixture()), store = new CredentialStore(db.storage);
+    await store.create(password);
+    expect(store.isUnlocked()).toBe(true); expect((await store.overview()).mode).toBe('unlocked');
+    expect((await store.load()).providers.openai.apiKey).toBe(keys.openai);
+    await store.reset(); expect(store.isUnlocked()).toBe(false);
+    expect((await store.overview()).mode).toBe('none');
+  });
+  it.each(['id', 'salt'] as const)('locks when only the saved %s changes', async field => {
+    const db = memory(fixture()), store = new CredentialStore(db.storage);
+    await store.create(password); const previous = db.peek(), changed = structuredClone(previous);
+    changed.vault.revision = crypto.randomUUID();
+    changed.vault[field] = field === 'id' ? crypto.randomUUID() : btoa('x'.repeat(32));
+    expect(store.observeChange(changed, previous)).toBe(true);
+    await db.storage.write(changed);
+    expect((await store.overview()).mode).toBe('locked'); expect(store.isUnlocked()).toBe(false);
+    await expect(store.load()).rejects.toThrow('locked');
+  });
+  it('distinguishes creation, reset, and preference/key changes in other panels', async () => {
+    const db = memory(fixture()), store = new CredentialStore(db.storage), observer = new CredentialStore(db.storage);
+    await store.create(password); const original = db.peek();
+    expect(observer.observeChange(original, null)).toBe(true);
+    expect(observer.observeChange(null, original)).toBe(true);
+    expect(observer.observeChange(null, null)).toBe(false);
+    expect(observer.observeChange({ theme: 'dark' }, { theme: 'light' })).toBe(false);
+    const updated = structuredClone(original); updated.vault.revision = crypto.randomUUID();
+    expect(observer.observeChange(updated, original)).toBe(false);
+  });
+  it('refuses password rotation from a locked or stale settings form', async () => {
+    const db = memory(fixture()), store = new CredentialStore(db.storage);
+    const stale = await store.create(password); const current = await store.load();
+    current.providers.openai.apiKey = 'fake-changed-key'; await store.save(current, true);
+    const before = db.peek();
+    await expect(store.changePassword(password, replacement, stale)).rejects.toThrow('another panel');
+    expect(db.peek()).toEqual(before);
+    const fresh = await store.load(); store.lock();
+    await expect(store.changePassword(password, replacement, fresh)).rejects.toThrow('locked');
+    expect(db.peek()).toEqual(before);
+  });
+  it('keeps the newly rotated vault usable before closing the panel', async () => {
+    const db = memory(fixture()), store = new CredentialStore(db.storage);
+    const loaded = await store.create(password);
+    await store.changePassword(password, replacement, loaded);
+    expect(store.isUnlocked()).toBe(true);
+    expect((await store.load()).providers.openai.apiKey).toBe(keys.openai);
   });
 });

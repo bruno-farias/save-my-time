@@ -11,6 +11,7 @@ export async function* readLines(body: ReadableStream<Uint8Array>): AsyncGenerat
       buffer += done ? decoder.decode() : decoder.decode(value, { stream: true });
       let newline: number;
       while ((newline = buffer.indexOf('\n')) !== -1) {
+        if (newline > 2_000_000) throw new Error(t('The provider sent an oversized stream record.'));
         yield buffer.slice(0, newline).replace(/\r$/, '');
         buffer = buffer.slice(newline + 1);
       }

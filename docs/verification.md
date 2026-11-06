@@ -1,13 +1,15 @@
 # Verification record
 
-Version 0.3.1 checked on 2026-11-06, using Node 24.19.0 and Postman CLI 1.73.0.
+Version 0.3.1 and its expanded test suite checked on 2026-11-06, using Node 24.19.0, Postman CLI 1.73.0, Vitest 5.1.0, and Stryker 10.1.1.
 
 | Check | Result | What it establishes |
 | --- | --- | --- |
 | `npm run typecheck` | Passed | Application, provider, extension, and test code type-checks. |
-| `npm test` | 42 passed | Existing extraction/provider/stream checks plus actual Web Crypto encryption, tampering, migration failures, password rotation, lock races, stale key edits, reset, language registration, metadata/placeholder validation, and fallback. |
+| Unit tests (`npm run test:coverage`) | 266 passed | Settings and URL boundaries, article sanitization and metadata, context limits, stream cleanup and framing, browser permissions and cache races, actual Web Crypto operations, vault formats and transitions, and language validation/fallback. |
+| Core V8 coverage | 100% statements, branches, functions, and lines | The nine modules listed in [testing](testing.md). Per-file gates require 95% statements/lines/functions and 85% branches. This is not whole-extension coverage. |
+| Stryker mutation tests | 90.23% passed | 1,187 executed mutants: 1,059 killed, 12 timed out, and 116 survived. No uncovered mutants or runner errors. Four compile-time glob mutants are explicitly ignored. The 80% gate and nonempty/error-free run guards passed. |
 | `npm run locales:check` | Passed | 32 output languages, 4 interface languages, and 261 translated messages per initial interface. New JSON files require no registration code. |
-| `npm run test:integration` | 83 passed for 0.3.0; adapters unchanged in 0.3.1 | 45 generation and 38 model-catalog cases using real HTTP against local Postman fixtures. Catalog coverage includes auth, pagination, filtering, empty/invalid responses, rate limits, redirects, repeated cursors, and abort. All four members appear in the simulation log. |
+| `npm run test:integration` | 83 passed | 45 generation and 38 model-catalog cases using real HTTP against local Postman fixtures. Catalog coverage includes auth, pagination, filtering, empty/invalid responses, rate limits, redirects, repeated cursors, and abort. All four members appear in the simulation log. |
 | Chromium browser tests | 9 passed | The development preview and packaged extension run in Chromium. The extension reads a real tab, sends article context in summaries and follow-ups, isolates keys from content scripts, cancels work, handles navigation, restores per-tab chat, and cleans up closed-tab sessions. Additional cases cover model/settings behavior, themes, missing article access, vault migration/unlock/rotation/reset, cross-panel locks, stale settings recovery, idle and resumed-document locks, and independent interface/output language persistence. |
 | Same browser cases with installed Brave | 9 passed | The same 9 cases pass in Brave, including inline password validation and native side-panel toggling. |
 | Build + `node scripts/package.mjs` | Passed | `dist/` and `release/save-my-time.zip` are produced. |
@@ -38,6 +40,12 @@ The browser window changed before the planned live summary click could run; the 
 
 Live inference was not run. The OpenAI catalog check establishes live model-list authentication and browser connectivity for the configured account only. The remaining provider catalogs were tested with HTTP fixtures. These checks do not establish inference quality, generation endpoint compatibility for every catalog entry, real quota/billing, or actual model-download behavior. Chrome AI tests use capability fixtures, and unsupported browsers receive an explicit error rather than a cloud fallback.
 
-The GitHub workflow builds and runs unit checks on push/PR; no remote workflow run or store publication was performed.
+The GitHub workflow runs coverage/build, HTTP/browser, and mutation jobs on pushes and pull requests. Reports are uploaded as artifacts. Remote results are available in [GitHub Actions](https://github.com/bruno-farias/save-my-time/actions). No browser-store publication was performed.
 
 Postman CLI 1.73.0 differs from its installed skill in two places: `postman status` is an unknown command, and simulation mock paths need the explicit `config.yaml` file instead of the mock directory. The local simulation uses the working file form. All fixtures and evidence remain local; guest workspace bindings and generated skills are ignored by Git.
+
+The test expansion found two regressions and added failing cases before fixing them: an oversized stream record ending in a newline could bypass the size guard, and UTF-8 context truncation could delete a complete replacement character already present in the article. Provider wire contracts remain unchanged. The 83-case HTTP rerun recorded 19 Ollama, 19 OpenAI, 22 Claude, and 23 Gemini requests; all nine browser cases passed in Chromium and Brave after the fixes.
+
+The mutation command rejects runner errors and empty runs, in addition to enforcing its score threshold. A deliberately empty line-range selection was verified to exit unsuccessfully. A short test-name fix removed runner failures caused by embedding a very large invalid-vault fixture in a parameterized test name. Stryker dependencies are unmodified; configuration compatibility notes and the single compile-time glob exclusion are in [testing](testing.md).
+
+The final mutation report retains all 116 survivors for review; no blanket mutation operators or static mutants were excluded to increase the score. The score covers the nine modules in `stryker.config.json`, with a full run taking approximately 2 minutes 20 seconds on the local machine. HTML and JSON reports are generated under `reports/mutation/` and uploaded by CI.

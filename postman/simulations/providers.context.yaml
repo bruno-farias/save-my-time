@@ -44,6 +44,13 @@ assumptions:
     verification: On 2026-11-06, 42 unit tests and 83 HTTP integration tests passed; all four HTTP members appeared in the simulation log. Eight browser cases passed in Chromium and Brave, with three vault/language cases rerun after final fixes. These include wrong passwords, rotation, reset, cross-panel locks, stale-form recovery, idle/resumed-document locking, and generation abort on lock. This does not establish live provider language quality. See fingerprint vault-and-community-languages.
     source: tests/vault.test.ts; tests/locales.test.ts; tests/e2e/vault.spec.ts; docs/verification.md; test-results/provider-simulation.ndjson
     updated_at: '2026-11-06'
+  - id: coverage-and-mutation-regressions
+    status: supported
+    claim: The existing provider HTTP behaviors still hold after tightening stream-record limits and Unicode article truncation.
+    reason: New boundary tests exposed and fixed a newline-terminated oversized-record bypass and loss of a complete replacement character at a context boundary. The real HTTP adapters then passed the existing local simulation suite.
+    verification: On 2026-11-06, all 83 HTTP integration cases passed. The Postman log contained 19 Ollama, 19 OpenAI, 22 Anthropic, and 23 Gemini requests. All nine browser cases also passed in both Chromium and Brave. The new size-limit and UTF-8 cases are deterministic unit tests, not claims about live provider output. See fingerprint coverage-and-mutation-tests and docs/testing.md for mutation scope.
+    source: tests/stream-boundaries.test.ts; tests/prompt-boundaries.test.ts; tests/providers.integration.test.ts; tests/models.integration.test.ts; test-results/provider-simulation.ndjson
+    updated_at: '2026-11-06'
 fingerprints:
   - id: initial-implementation
     date: '2026-11-06'
@@ -58,4 +65,8 @@ fingerprints:
     date: '2026-11-06'
     version: 0.3.0
     commit: cccbff9 (working tree contains the uncommitted implementation)
+    cli: Postman CLI 1.73.0
+  - id: coverage-and-mutation-tests
+    date: '2026-11-06'
+    commit: 9c0155b (working tree adds tests, mutation tooling, and two boundary fixes)
     cli: Postman CLI 1.73.0
